@@ -37,8 +37,8 @@ def save_new_profile():
         
     new_profile_window.destroy()
 
-def create_new_profile_gui():
-    global new_profile_window
+def create_new_profile_gui(): #Öffnet das Fenster wo ein neues Frequenzprofil angelegt wird
+    global new_profile_window #Schreibe eine globale Variable 
     new_profile_window = tk.Toplevel(EasyPass)
     new_profile_window.title("Neues Frequenzprofil erstellen")
     
@@ -65,7 +65,9 @@ def create_new_profile_gui():
     tk.Button(new_profile_window, text="Profil speichern", command=save_new_profile).pack()
 
 def wechselPass():
+    global PassValue
     PassValue = LabelPass.cget("text")
+    
     
     if PassValue == "Tiefpass aktiv":
         LabelPass.config(text="Hochpass aktiv")
@@ -135,9 +137,15 @@ def Finale_Eingabe():
         profile_values = profile_values_dict[selected_profile]
         for value in profile_values:
             fa = float(value)
-            Ua = Eingangs_Spannung / math.sqrt(1 + (fa / Grenzfrequenz) ** 2)
-            amplitude = 20 * math.log10(Ua / Eingangs_Spannung)
+            if PassValue == "Tiefpass aktiv":
             phase = -math.atan(fa / Grenzfrequenz)  # Berechnung der Phase
+            Ua = Eingangs_Spannung / math.sqrt(1 + (fa / Grenzfrequenz) ** 2)
+            if PassValue == "Hochpass aktiv":
+            phase = (math.pi/2)*-math.atan(fa / Grenzfrequenz)  # Berechnung der Phase
+            Ua = Eingangs_Spannung / math.sqrt(1 + (Grenzfrequenz/ fa) ** 2)
+            
+            amplitude = 20 * math.log10(Ua / Eingangs_Spannung)
+            
             # Hinzufügen der Werte zu den entsprechenden Listen
             frequenzen.append(fa)
             ausgangsspannungen.append(Ua)
